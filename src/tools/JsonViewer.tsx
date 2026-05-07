@@ -144,7 +144,7 @@ export function JsonViewer() {
     <div>
       <div class="space-y-4">
         <textarea
-          class="textarea textarea-bordered w-full font-mono h-40 resize-y"
+          class="textarea textarea-bordered w-full font-mono min-h-[10rem] resize-y"
           placeholder='Paste JSON here… e.g. {"key": "value"}'
           value={input}
           onInput={e => setInput((e.target as HTMLTextAreaElement).value)}
@@ -189,7 +189,7 @@ export function JsonViewer() {
               </div>
             ) : (
               <textarea
-                class="textarea textarea-bordered w-full font-mono text-sm h-64 resize-y"
+                class="textarea textarea-bordered w-full font-mono text-sm min-h-[16rem] resize-y"
                 readOnly
                 value={getOutput()}
               />

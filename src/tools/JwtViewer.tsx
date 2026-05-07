@@ -93,7 +93,7 @@ export function JwtViewer() {
     <div>
       <div class="space-y-4">
         <textarea
-          class="textarea textarea-bordered w-full font-mono h-28 resize-y break-all"
+          class="textarea textarea-bordered w-full font-mono min-h-[7rem] resize-y break-all"
           placeholder="Paste a JWT token here… e.g. eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0In0.sig"
           value={input}
           onInput={e => handleInput((e.target as HTMLTextAreaElement).value)}
