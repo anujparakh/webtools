@@ -1,6 +1,7 @@
 import { useState } from "preact/hooks";
 import { useToolHistory } from "../hooks/useToolHistory";
 import { HistoryPanel } from "../components/HistoryPanel";
+import { CopyableBlock } from "../components/CopyableBlock";
 import { encodeUrlParams, decodeUrlParams } from "../url-utils";
 
 function EncoderDecoder({
@@ -14,7 +15,6 @@ function EncoderDecoder({
 }) {
   const [output, setOutput] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
 
   const run = (fn: () => string) => {
     setError(null);
@@ -26,13 +26,6 @@ function EncoderDecoder({
       setError(e instanceof Error ? e.message : "Operation failed");
       setOutput("");
     }
-  };
-
-  const copy = async () => {
-    if (!output) return;
-    await navigator.clipboard.writeText(output);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -86,16 +79,13 @@ function EncoderDecoder({
         </div>
       )}
       {output && (
-        <div class="space-y-2">
+        <CopyableBlock text={output}>
           <textarea
             class="textarea textarea-bordered w-full font-mono min-h-[8rem] resize-y"
             readOnly
             value={output}
           />
-          <button class="btn-tool" onClick={copy}>
-            {copied ? "Copied!" : "Copy"}
-          </button>
-        </div>
+        </CopyableBlock>
       )}
     </div>
   );

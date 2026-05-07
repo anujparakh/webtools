@@ -1,6 +1,7 @@
 import { useState } from "preact/hooks";
 import { useToolHistory } from "../hooks/useToolHistory";
 import { HistoryPanel } from "../components/HistoryPanel";
+import { CopyableBlock } from "../components/CopyableBlock";
 import { buildUrl, parseUrlForBuilder, type Param } from "../url-utils";
 
 export function UrlBuilder() {
@@ -8,7 +9,6 @@ export function UrlBuilder() {
   const [params, setParams] = useState<Param[]>([
     { id: crypto.randomUUID(), key: "", value: "", isJson: false, error: null },
   ]);
-  const [copied, setCopied] = useState(false);
   const { history, push, clear } = useToolHistory(
     "webtools:url-builder:history",
   );
@@ -64,14 +64,6 @@ export function UrlBuilder() {
   };
 
   const { url: builtUrl, error } = buildUrl(baseUrl, params);
-
-  const copy = async () => {
-    if (!builtUrl) return;
-    await navigator.clipboard.writeText(builtUrl);
-    push({ value: builtUrl, timestamp: Date.now() });
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   const loadFromHistory = (value: string) => {
     const parsed = parseUrlForBuilder(value);
@@ -196,14 +188,14 @@ export function UrlBuilder() {
       )}
 
       {builtUrl && !error && (
-        <div class="space-y-2">
+        <CopyableBlock
+          text={builtUrl}
+          onCopy={() => push({ value: builtUrl, timestamp: Date.now() })}
+        >
           <pre class="bg-base-100 rounded-xl p-3 text-sm font-mono break-all whitespace-pre-wrap border border-base-300">
             {builtUrl}
           </pre>
-          <button class="btn-tool" onClick={copy}>
-            {copied ? "Copied!" : "Copy URL"}
-          </button>
-        </div>
+        </CopyableBlock>
       )}
 
       <HistoryPanel

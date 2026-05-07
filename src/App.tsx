@@ -27,7 +27,7 @@ export function App() {
         ) : (
           <div class="px-4 py-6">
             <div
-              class="max-w-3xl mx-auto rounded-xl border border-base-300 bg-base-200 p-6"
+              class="max-w-5xl mx-auto rounded-xl border border-base-300 bg-base-200 p-6"
               style={
                 meta
                   ? ({

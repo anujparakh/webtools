@@ -1,7 +1,7 @@
-import { useState } from 'preact/hooks'
-import { useToolHistory } from '../hooks/useToolHistory'
-import { HistoryPanel } from '../components/HistoryPanel'
-import { JsonNode } from './JsonViewer'
+import { useState } from "preact/hooks";
+import { useToolHistory } from "../hooks/useToolHistory";
+import { HistoryPanel } from "../components/HistoryPanel";
+import { JsonNode } from "./JsonViewer";
 
 type JsonValue =
   | string
@@ -9,25 +9,31 @@ type JsonValue =
   | boolean
   | null
   | JsonValue[]
-  | { [key: string]: JsonValue }
+  | { [key: string]: JsonValue };
 
 interface DecodedJwt {
-  header: JsonValue
-  payload: JsonValue
-  signature: string
+  header: JsonValue;
+  payload: JsonValue;
+  signature: string;
 }
 
 function base64urlDecode(str: string): string {
-  const base64 = str.replace(/-/g, '+').replace(/_/g, '/')
-  const padded = base64 + '=='.slice(0, (4 - (base64.length % 4)) % 4)
-  return decodeURIComponent(escape(atob(padded)))
+  const base64 = str.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = base64 + "==".slice(0, (4 - (base64.length % 4)) % 4);
+  return decodeURIComponent(escape(atob(padded)));
 }
 
-function tryDecodeJwt(raw: string): { data: DecodedJwt | null; error: string | null } {
-  if (!raw.trim()) return { data: null, error: null }
-  const parts = raw.trim().split('.')
+function tryDecodeJwt(raw: string): {
+  data: DecodedJwt | null;
+  error: string | null;
+} {
+  if (!raw.trim()) return { data: null, error: null };
+  const parts = raw.trim().split(".");
   if (parts.length !== 3)
-    return { data: null, error: `Invalid JWT: expected 3 dot-separated parts, got ${parts.length}` }
+    return {
+      data: null,
+      error: `Invalid JWT: expected 3 dot-separated parts, got ${parts.length}`,
+    };
   try {
     return {
       data: {
@@ -36,41 +42,65 @@ function tryDecodeJwt(raw: string): { data: DecodedJwt | null; error: string | n
         signature: parts[2],
       },
       error: null,
-    }
+    };
   } catch (e) {
-    return { data: null, error: e instanceof Error ? e.message : 'Decode failed' }
+    return {
+      data: null,
+      error: e instanceof Error ? e.message : "Decode failed",
+    };
   }
 }
 
-const TIMESTAMP_CLAIMS = new Set(['exp', 'nbf', 'iat'])
+const TIMESTAMP_CLAIMS = new Set(["exp", "nbf", "iat"]);
 
-function ClaimAnnotation({ claimKey, value }: { claimKey: string; value: JsonValue }) {
-  if (!TIMESTAMP_CLAIMS.has(claimKey) || typeof value !== 'number') return null
-  const date = new Date(value * 1000)
-  const isExpired = claimKey === 'exp' && date < new Date()
+function ClaimAnnotation({
+  claimKey,
+  value,
+}: {
+  claimKey: string;
+  value: JsonValue;
+}) {
+  if (!TIMESTAMP_CLAIMS.has(claimKey) || typeof value !== "number") return null;
+  const date = new Date(value * 1000);
+  const isExpired = claimKey === "exp" && date < new Date();
   return (
-    <div class={`text-xs ml-4 mt-0.5 font-mono ${isExpired ? 'text-error' : 'text-base-content/50'}`}>
-      → {date.toISOString()}{isExpired ? ' (expired)' : ''}
+    <div
+      class={`text-xs ml-4 mt-0.5 font-mono ${isExpired ? "text-error" : "text-base-content/50"}`}
+    >
+      → {date.toISOString()}
+      {isExpired ? " (expired)" : ""}
     </div>
-  )
+  );
 }
 
-function Section({ title, children }: { title: string; children: preact.ComponentChildren }) {
+function Section({
+  title,
+  children,
+  maxHeight = "max-h-64",
+}: {
+  title: string;
+  children: preact.ComponentChildren;
+  maxHeight?: string;
+}) {
   return (
     <div class="space-y-2">
-      <h3 class="text-sm font-semibold text-base-content/60 uppercase tracking-wider">{title}</h3>
-      <div class="bg-base-200 rounded-lg p-4 font-mono text-sm overflow-auto max-h-64">
+      <h3 class="text-sm font-semibold text-base-content/60 uppercase tracking-wider">
+        {title}
+      </h3>
+      <div
+        class={`bg-base-300 rounded-lg p-4 font-mono text-sm overflow-auto ${maxHeight}`}
+      >
         {children}
       </div>
     </div>
-  )
+  );
 }
 
 export function JwtViewer() {
-  const [input, setInput] = useState('')
-  const { history, push, clear } = useToolHistory('webtools:jwt:history')
+  const [input, setInput] = useState("");
+  const { history, push, clear } = useToolHistory("webtools:jwt:history");
 
-  const { data: decoded, error } = tryDecodeJwt(input)
+  const { data: decoded, error } = tryDecodeJwt(input);
 
   if (decoded && input.trim()) {
     // Push to history on successful decode (deduplicated by the hook)
@@ -79,15 +109,17 @@ export function JwtViewer() {
   }
 
   const handleInput = (value: string) => {
-    setInput(value)
-    const { data } = tryDecodeJwt(value)
-    if (data) push({ value: value.trim(), timestamp: Date.now() })
-  }
+    setInput(value);
+    const { data } = tryDecodeJwt(value);
+    if (data) push({ value: value.trim(), timestamp: Date.now() });
+  };
 
   const payloadEntries =
-    decoded?.payload && typeof decoded.payload === 'object' && !Array.isArray(decoded.payload)
+    decoded?.payload &&
+    typeof decoded.payload === "object" &&
+    !Array.isArray(decoded.payload)
       ? Object.entries(decoded.payload as { [key: string]: JsonValue })
-      : null
+      : null;
 
   return (
     <div>
@@ -96,7 +128,7 @@ export function JwtViewer() {
           class="textarea textarea-bordered w-full font-mono min-h-[7rem] resize-y break-all"
           placeholder="Paste a JWT token here… e.g. eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0In0.sig"
           value={input}
-          onInput={e => handleInput((e.target as HTMLTextAreaElement).value)}
+          onInput={(e) => handleInput((e.target as HTMLTextAreaElement).value)}
         />
 
         {error && (
@@ -111,7 +143,7 @@ export function JwtViewer() {
               <JsonNode keyName={null} value={decoded.header} depth={0} />
             </Section>
 
-            <Section title="Payload">
+            <Section title="Payload" maxHeight="max-h-100">
               <div>
                 <JsonNode keyName={null} value={decoded.payload} depth={0} />
                 {payloadEntries && (
@@ -125,7 +157,9 @@ export function JwtViewer() {
             </Section>
 
             <Section title="Signature">
-              <pre class="break-all whitespace-pre-wrap text-base-content/60">{decoded.signature}</pre>
+              <pre class="break-all whitespace-pre-wrap text-base-content/60">
+                {decoded.signature}
+              </pre>
               <p class="text-xs text-base-content/40 mt-2 font-sans">
                 Signature is not verified — client-side only
               </p>
@@ -134,11 +168,7 @@ export function JwtViewer() {
         )}
       </div>
 
-      <HistoryPanel
-        history={history}
-        onSelect={setInput}
-        onClear={clear}
-      />
+      <HistoryPanel history={history} onSelect={setInput} onClear={clear} />
     </div>
-  )
+  );
 }
