@@ -11,7 +11,15 @@ export default {
     require('daisyui'),
   ],
   daisyui: {
-    themes: ['dark'],
+    themes: [
+      {
+        dark: {
+          ...require('daisyui/src/theming/themes')['dark'],
+          'primary': '#6366f1',
+          'primary-content': '#ffffff',
+        },
+      },
+    ],
     darkTheme: 'dark',
     base: true,
     styled: true,
