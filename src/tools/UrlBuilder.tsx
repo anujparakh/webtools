@@ -152,7 +152,7 @@ export function UrlBuilder() {
               </button>
             </div>
             {/* Inline actions below the value, aligned to the value column */}
-            <div class="flex gap-2 items-center ml-[9.5rem]">
+            <div class="flex justify-end gap-2 items-center mr-[2.5rem]">
               <label class="flex items-center gap-1 cursor-pointer text-xs text-base-content/50 select-none">
                 <input
                   type="checkbox"
