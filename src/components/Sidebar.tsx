@@ -17,7 +17,7 @@ export function Sidebar({ currentPath }: SidebarProps) {
       {/* Desktop left rail */}
       <aside class="hidden md:flex flex-col w-52 min-h-screen bg-base-200 border-r border-base-300 p-4 shrink-0">
         <button
-          class="text-lg font-bold mb-6 text-left hover:text-primary transition-colors"
+          class="text-lg font-bold mb-6 text-left transition-colors text-primary hover:text-secondary"
           onClick={() => navigate('/')}
         >
           Web Tools
@@ -43,7 +43,7 @@ export function Sidebar({ currentPath }: SidebarProps) {
       <div class="md:hidden bg-base-200 border-b border-base-300 px-3 py-2">
         <div class="flex items-center gap-2 overflow-x-auto">
           <button
-            class="font-bold text-sm shrink-0 mr-1 hover:text-primary transition-colors"
+            class="font-bold text-sm shrink-0 mr-1 text-primary hover:text-secondary transition-colors"
             onClick={() => navigate('/')}
           >
             Web Tools

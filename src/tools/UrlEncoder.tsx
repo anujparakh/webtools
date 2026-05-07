@@ -38,24 +38,16 @@ function EncoderDecoder({
   return (
     <div class="space-y-4">
       <textarea
-        class="textarea textarea-bordered w-full font-mono h-32 resize-y focus:border-primary"
+        class="textarea textarea-bordered w-full font-mono h-32 resize-y"
         placeholder="Paste text or URL here…"
         value={input}
         onInput={e => onInputChange((e.target as HTMLTextAreaElement).value)}
       />
       <div class="flex flex-wrap gap-2">
-        <button class="btn btn-sm btn-primary" onClick={() => run(() => encodeURIComponent(input))}>
-          Encode Full
-        </button>
-        <button class="btn btn-sm btn-outline" onClick={() => run(() => encodeUrlParams(input))}>
-          Encode URL Params
-        </button>
-        <button class="btn btn-sm btn-outline" onClick={() => run(() => decodeUrlParams(input))}>
-          Decode URL Params
-        </button>
-        <button class="btn btn-sm btn-outline" onClick={() => run(() => decodeURIComponent(input))}>
-          Decode
-        </button>
+        <button class="btn-tool" onClick={() => run(() => encodeURIComponent(input))}>Encode Full</button>
+        <button class="btn-tool" onClick={() => run(() => encodeUrlParams(input))}>Encode URL Params</button>
+        <button class="btn-tool" onClick={() => run(() => decodeUrlParams(input))}>Decode URL Params</button>
+        <button class="btn-tool" onClick={() => run(() => decodeURIComponent(input))}>Decode</button>
       </div>
       {error && (
         <div role="alert" class="alert alert-error text-sm py-2">
@@ -65,13 +57,11 @@ function EncoderDecoder({
       {output && (
         <div class="space-y-2">
           <textarea
-            class="textarea textarea-bordered w-full font-mono h-32 resize-y bg-base-200"
+            class="textarea textarea-bordered w-full font-mono h-32 resize-y"
             readOnly
             value={output}
           />
-          <button class="btn btn-sm btn-ghost" onClick={copy}>
-            {copied ? 'Copied!' : 'Copy'}
-          </button>
+          <button class="btn-tool" onClick={copy}>{copied ? 'Copied!' : 'Copy'}</button>
         </div>
       )}
     </div>

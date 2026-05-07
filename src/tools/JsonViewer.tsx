@@ -151,13 +151,13 @@ export function JsonViewer() {
         />
 
         <div class="flex flex-wrap gap-2">
-          <button class="btn btn-sm btn-primary" onClick={parse}>Parse</button>
+          <button class="btn-tool" onClick={parse}>Parse</button>
           {parsed && (
             <>
-              <button class="btn btn-sm btn-ghost" onClick={() => setViewMode('tree')}>Tree</button>
-              <button class="btn btn-sm btn-ghost" onClick={() => setViewMode('formatted')}>Format</button>
-              <button class="btn btn-sm btn-ghost" onClick={() => setViewMode('minified')}>Minify</button>
-              <button class="btn btn-sm btn-ghost" onClick={copy}>{copied ? 'Copied!' : 'Copy'}</button>
+              <button class="btn-tool" onClick={() => setViewMode('tree')}>Tree</button>
+              <button class="btn-tool" onClick={() => setViewMode('formatted')}>Format</button>
+              <button class="btn-tool" onClick={() => setViewMode('minified')}>Minify</button>
+              <button class="btn-tool" onClick={copy}>{copied ? 'Copied!' : 'Copy'}</button>
             </>
           )}
         </div>
@@ -174,7 +174,8 @@ export function JsonViewer() {
               {(['tree', 'formatted', 'minified'] as ViewMode[]).map(m => (
                 <button
                   key={m}
-                  class={`text-sm px-2 py-1 rounded transition-colors ${viewMode === m ? 'bg-base-300 text-base-content' : 'text-base-content/50 hover:text-base-content'}`}
+                  class="btn-tool"
+                  style={viewMode === m ? { opacity: 1 } : { opacity: 0.45 }}
                   onClick={() => setViewMode(m)}
                 >
                   {m.charAt(0).toUpperCase() + m.slice(1)}
@@ -188,7 +189,7 @@ export function JsonViewer() {
               </div>
             ) : (
               <textarea
-                class="textarea textarea-bordered w-full font-mono text-sm h-64 resize-y bg-base-200"
+                class="textarea textarea-bordered w-full font-mono text-sm h-64 resize-y"
                 readOnly
                 value={getOutput()}
               />
