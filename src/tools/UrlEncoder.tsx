@@ -47,7 +47,7 @@ function EncoderDecoder({
           class="btn-tool"
           onClick={() => run(() => encodeUrlParams(input))}
           style={{
-            "--card-color": "#bbb",
+            "--card-color": "#a1d9e3",
           }}
         >
           Encode URL Params
@@ -67,7 +67,7 @@ function EncoderDecoder({
           class="btn-tool"
           onClick={() => run(() => decodeUrlParams(input))}
           style={{
-            "--card-color": "#bbb",
+            "--card-color": "#b494ff",
           }}
         >
           Decode URL Params

@@ -33,6 +33,67 @@ const baseTheme = EditorView.theme({
   ".cm-selectionBackground": {
     backgroundColor: "rgba(99,102,241,0.35) !important",
   },
+  // Search / replace panel
+  ".cm-panel": {
+    background: "#1c2128",
+    borderTop: "1px solid rgba(255,255,255,0.07)",
+  },
+  ".cm-panel.cm-search": {
+    padding: "6px 8px",
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: "4px",
+  },
+  "input.cm-textfield": {
+    background: "#21262d",
+    border: "1px solid rgba(255,255,255,0.12)",
+    borderRadius: "4px",
+    color: "#e6edf3",
+    padding: "3px 8px",
+    fontSize: "13px",
+    outline: "none",
+    fontFamily:
+      'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
+  },
+  "input.cm-textfield:focus": {
+    borderColor: "#6366f1",
+    boxShadow: "0 0 0 2px rgba(99,102,241,0.2)",
+  },
+  "button.cm-button": {
+    background: "rgba(99,102,241,0.15)",
+    border: "1px solid rgba(99,102,241,0.3)",
+    borderRadius: "4px",
+    color: "rgba(230,237,243,0.8)",
+    padding: "3px 10px",
+    fontSize: "12px",
+    cursor: "pointer",
+  },
+  "button.cm-button:hover": {
+    background: "rgba(99,102,241,0.28)",
+  },
+  ".cm-panel button[name=close]": {
+    background: "transparent",
+    border: "none",
+    color: "rgba(230,237,243,0.3)",
+    fontSize: "18px",
+    lineHeight: "1",
+    padding: "2px 6px",
+    cursor: "pointer",
+    alignSelf: "flex-start",
+  },
+  ".cm-panel button[name=close]:hover": {
+    color: "rgba(230,237,243,0.7)",
+  },
+  ".cm-panel label": {
+    color: "rgba(230,237,243,0.45)",
+    fontSize: "12px",
+    display: "flex",
+    alignItems: "center",
+    gap: "4px",
+    userSelect: "none",
+  },
+  // Fold placeholder
   ".cm-foldPlaceholder": {
     backgroundColor: "rgba(99,102,241,0.15)",
     border: "1px solid rgba(99,102,241,0.3)",

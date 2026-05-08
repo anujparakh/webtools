@@ -19,7 +19,10 @@ function JsonParamEditor({
         placeholder="value"
         value={param.value}
         onInput={(e) =>
-          onUpdate({ value: (e.target as HTMLTextAreaElement).value, error: null })
+          onUpdate({
+            value: (e.target as HTMLTextAreaElement).value,
+            error: null,
+          })
         }
       />
     );
@@ -55,7 +58,13 @@ export function UrlBuilder() {
   const addParam = () =>
     setParams((prev) => [
       ...prev,
-      { id: crypto.randomUUID(), key: "", value: "", isJson: false, error: null },
+      {
+        id: crypto.randomUUID(),
+        key: "",
+        value: "",
+        isJson: false,
+        error: null,
+      },
     ]);
 
   const removeParam = (id: string) =>
@@ -109,7 +118,13 @@ export function UrlBuilder() {
     } else {
       setBaseUrl(value);
       setParams([
-        { id: crypto.randomUUID(), key: "", value: "", isJson: false, error: null },
+        {
+          id: crypto.randomUUID(),
+          key: "",
+          value: "",
+          isJson: false,
+          error: null,
+        },
       ]);
     }
   };
@@ -129,7 +144,7 @@ export function UrlBuilder() {
         />
       </div>
 
-      <div class="space-y-2">
+      <div class="space-y-4">
         <label class="label label-text text-sm font-medium">Query Params</label>
         {params.map((p) => (
           <div key={p.id} class="space-y-3">
@@ -140,7 +155,9 @@ export function UrlBuilder() {
                 placeholder="key"
                 value={p.key}
                 onInput={(e) =>
-                  updateParam(p.id, { key: (e.target as HTMLInputElement).value })
+                  updateParam(p.id, {
+                    key: (e.target as HTMLInputElement).value,
+                  })
                 }
               />
               <JsonParamEditor
@@ -155,7 +172,7 @@ export function UrlBuilder() {
                 ✕
               </button>
             </div>
-            <div class="flex justify-end gap-2 items-center mr-[2.5rem]">
+            <div class="flex justify-end gap-3 items-center mr-[2.5rem]">
               <label class="flex items-center gap-1 cursor-pointer text-xs text-base-content/50 select-none">
                 <input
                   type="checkbox"
@@ -180,6 +197,9 @@ export function UrlBuilder() {
                 class="btn-tool btn-tool-xs"
                 title="URL-decode this value"
                 onClick={() => decodeParamValue(p.id, p.value)}
+                style={{
+                  "--card-color": "#6366f1",
+                }}
               >
                 Decode
               </button>
