@@ -35,7 +35,7 @@ function JsonParamEditor({
         onChange={(val) => onUpdate({ value: val, error: null })}
         lineNumbers={false}
         minHeight="2.5rem"
-        maxHeight="12rem"
+        maxHeight="24rem"
       />
     </div>
   );
@@ -92,6 +92,12 @@ export function UrlBuilder() {
     updateParam(id, { value: encodeURIComponent(value), error: null });
   };
 
+  const minifyParamValue = (id: string, value: string) => {
+    try {
+      updateParam(id, { value: JSON.stringify(JSON.parse(value)), error: null });
+    } catch {}
+  };
+
   const decodeParamValue = (id: string, value: string) => {
     try {
       updateParam(id, { value: decodeURIComponent(value), error: null });
@@ -103,20 +109,30 @@ export function UrlBuilder() {
   const { url: builtUrl, error } = buildUrl(baseUrl, params);
 
   const loadFromHistory = (value: string) => {
-    const parsed = parseUrlForBuilder(value);
+    let urlToLoad = value;
+    let paramsMeta: { isJson: boolean }[] = [];
+    try {
+      const decoded = JSON.parse(value);
+      if (decoded && typeof decoded.url === "string") {
+        urlToLoad = decoded.url;
+        paramsMeta = decoded.paramsMeta ?? [];
+      }
+    } catch {}
+
+    const parsed = parseUrlForBuilder(urlToLoad);
     if (parsed && parsed.params.length > 0) {
       setBaseUrl(parsed.baseUrl);
       setParams(
-        parsed.params.map(({ key, value: v }) => ({
+        parsed.params.map(({ key, value: v }, i) => ({
           id: crypto.randomUUID(),
           key,
           value: v,
-          isJson: false,
+          isJson: paramsMeta[i]?.isJson ?? false,
           error: null,
         })),
       );
     } else {
-      setBaseUrl(value);
+      setBaseUrl(urlToLoad);
       setParams([
         {
           id: crypto.randomUUID(),
@@ -203,6 +219,13 @@ export function UrlBuilder() {
               >
                 Decode
               </button>
+              <button
+                class="btn-tool btn-tool-xs"
+                title="Minify JSON value"
+                onClick={() => minifyParamValue(p.id, p.value)}
+              >
+                Minify
+              </button>
             </div>
             {p.error && (
               <p class="text-xs text-error ml-[11.5rem]">{p.error}</p>
@@ -223,7 +246,14 @@ export function UrlBuilder() {
       {builtUrl && !error && (
         <CopyableBlock
           text={builtUrl}
-          onCopy={() => push({ value: builtUrl, timestamp: Date.now() })}
+          onCopy={() => {
+            const activeParams = params.filter((p) => p.key.trim());
+            const meta = {
+              url: builtUrl,
+              paramsMeta: activeParams.map((p) => ({ isJson: p.isJson })),
+            };
+            push({ value: JSON.stringify(meta), label: builtUrl, timestamp: Date.now() });
+          }}
         >
           <pre class="bg-base-100 rounded-xl p-3 text-sm font-mono break-all whitespace-pre-wrap border border-base-300">
             {builtUrl}
