@@ -35,10 +35,11 @@ export function buildUrl(
   if (!active.length) return { url: baseUrl || null, error: null }
   try {
     const parts = active.map(p => {
-      const encodedValue = p.isJson
-        ? encodeURIComponent(JSON.stringify(JSON.parse(p.value)))
-        : encodeURIComponent(p.value)
-      return `${encodeURIComponent(p.key)}=${encodedValue}`
+      let val = p.value;
+      if (p.isJson) {
+        try { val = JSON.stringify(JSON.parse(p.value)); } catch {}
+      }
+      return `${encodeURIComponent(p.key)}=${encodeURIComponent(val)}`
     })
     const sep = baseUrl.includes('?') ? '&' : '?'
     return { url: baseUrl + sep + parts.join('&'), error: null }
