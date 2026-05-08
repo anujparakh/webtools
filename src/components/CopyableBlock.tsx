@@ -22,15 +22,15 @@ export function CopyableBlock({
     <div class="relative">
       {children}
       <button
-        class="absolute top-2 right-2 p-1.5 rounded text-base-content/40 hover:text-base-content/80 bg-base-300/60 hover:bg-base-300 transition-colors"
+        class="absolute top-2 right-2 p-2 rounded text-base-content/60 hover:text-base-content bg-base-300 hover:bg-base-content/20 transition-colors"
         onClick={copy}
         title={copied ? "Copied!" : "Copy"}
       >
         {copied ? (
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
+            width="16"
+            height="16"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -43,8 +43,8 @@ export function CopyableBlock({
         ) : (
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
+            width="16"
+            height="16"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"

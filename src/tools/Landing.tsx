@@ -77,6 +77,18 @@ export function Landing() {
           </button>
         ))}
       </div>
+
+      <p class="mt-12 text-xs text-base-content/30">
+        Made by{" "}
+        <a
+          href="https://anujparakh.dev"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-base-content/60 transition-colors underline underline-offset-2"
+        >
+          Anuj Parakh
+        </a>
+      </p>
     </div>
   );
 }

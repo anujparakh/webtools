@@ -1,7 +1,7 @@
 import { useState } from "preact/hooks";
 import { useToolHistory } from "../hooks/useToolHistory";
 import { HistoryPanel } from "../components/HistoryPanel";
-import { JsonNode } from "./JsonViewer";
+import { JsonNode } from "../components/JsonNode";
 
 type JsonValue =
   | string

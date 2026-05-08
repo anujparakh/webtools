@@ -8,8 +8,6 @@ import {
   Key,
   CaretLeft,
   CaretRight,
-  ArrowLeftIcon,
-  ArrowRightIcon,
 } from "@phosphor-icons/react";
 
 const TOOLS = [
@@ -24,7 +22,17 @@ interface SidebarProps {
 }
 
 export function Sidebar({ currentPath }: SidebarProps) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(
+    () => localStorage.getItem("webtools:sidebar:collapsed") === "true",
+  );
+
+  const toggleCollapsed = () => {
+    setCollapsed((c) => {
+      const next = !c;
+      localStorage.setItem("webtools:sidebar:collapsed", String(next));
+      return next;
+    });
+  };
 
   return (
     <>
@@ -53,26 +61,33 @@ export function Sidebar({ currentPath }: SidebarProps) {
               onClick={() => navigate(t.path)}
               title={collapsed ? t.label : undefined}
             >
-              <t.Icon
-                size={18}
-                weight={currentPath === t.path ? "fill" : "regular"}
-              />
+              <t.Icon size={18} />
               {!collapsed && t.label}
             </button>
           ))}
         </nav>
 
         <button
-          class="flex items-center justify-center p-2 rounded-lg text-base-content/40 hover:text-base-content hover:bg-base-300 transition-colors"
-          onClick={() => setCollapsed((c) => !c)}
+          class="flex items-center justify-center p-2 rounded-lg text-base-content/40 hover:text-base-content hover:bg-base-100 bg-base-300 transition-colors"
+          onClick={toggleCollapsed}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {collapsed ? (
-            <ArrowRightIcon size={20} />
-          ) : (
-            <ArrowLeftIcon size={20} />
-          )}
+          {collapsed ? <CaretRight size={15} /> : <CaretLeft size={15} />}
         </button>
+
+        {!collapsed && (
+          <p class="mt-3 text-xs text-base-content/25 text-center">
+            Made by{" "}
+            <a
+              href="https://anujparakh.dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-primary transition-colors underline underline-offset-2"
+            >
+              Anuj Parakh
+            </a>
+          </p>
+        )}
       </aside>
 
       {/* Mobile top bar */}

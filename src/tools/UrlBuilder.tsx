@@ -2,7 +2,41 @@ import { useState } from "preact/hooks";
 import { useToolHistory } from "../hooks/useToolHistory";
 import { HistoryPanel } from "../components/HistoryPanel";
 import { CopyableBlock } from "../components/CopyableBlock";
+import { JsonCodeEditor } from "../components/JsonCodeEditor";
 import { buildUrl, parseUrlForBuilder, type Param } from "../url-utils";
+
+function JsonParamEditor({
+  param,
+  onUpdate,
+}: {
+  param: Param;
+  onUpdate: (patch: Partial<Param>) => void;
+}) {
+  if (!param.isJson) {
+    return (
+      <textarea
+        class="textarea textarea-bordered textarea-sm font-mono flex-1 min-w-0 min-h-[2.5rem] resize-y"
+        placeholder="value"
+        value={param.value}
+        onInput={(e) =>
+          onUpdate({ value: (e.target as HTMLTextAreaElement).value, error: null })
+        }
+      />
+    );
+  }
+
+  return (
+    <div class="flex-1 min-w-0 overflow-hidden">
+      <JsonCodeEditor
+        value={param.value}
+        onChange={(val) => onUpdate({ value: val, error: null })}
+        lineNumbers={false}
+        minHeight="2.5rem"
+        maxHeight="12rem"
+      />
+    </div>
+  );
+}
 
 export function UrlBuilder() {
   const [baseUrl, setBaseUrl] = useState("");
@@ -21,13 +55,7 @@ export function UrlBuilder() {
   const addParam = () =>
     setParams((prev) => [
       ...prev,
-      {
-        id: crypto.randomUUID(),
-        key: "",
-        value: "",
-        isJson: false,
-        error: null,
-      },
+      { id: crypto.randomUUID(), key: "", value: "", isJson: false, error: null },
     ]);
 
   const removeParam = (id: string) =>
@@ -81,13 +109,7 @@ export function UrlBuilder() {
     } else {
       setBaseUrl(value);
       setParams([
-        {
-          id: crypto.randomUUID(),
-          key: "",
-          value: "",
-          isJson: false,
-          error: null,
-        },
+        { id: crypto.randomUUID(), key: "", value: "", isJson: false, error: null },
       ]);
     }
   };
@@ -111,29 +133,19 @@ export function UrlBuilder() {
         <label class="label label-text text-sm font-medium">Query Params</label>
         {params.map((p) => (
           <div key={p.id} class="space-y-3">
-            {/* Key + value row with delete on the right */}
             <div class="flex gap-2 items-start">
               <input
                 type="text"
-                class="input input-bordered input-sm font-mono w-36 shrink-0"
+                class="input input-bordered input-sm font-mono w-44 shrink-0"
                 placeholder="key"
                 value={p.key}
                 onInput={(e) =>
-                  updateParam(p.id, {
-                    key: (e.target as HTMLInputElement).value,
-                  })
+                  updateParam(p.id, { key: (e.target as HTMLInputElement).value })
                 }
               />
-              <textarea
-                class="textarea textarea-bordered textarea-sm font-mono flex-1 min-h-[2.5rem] resize-y"
-                placeholder={p.isJson ? '{"key": "value"}' : "value"}
-                value={p.value}
-                onInput={(e) =>
-                  updateParam(p.id, {
-                    value: (e.target as HTMLTextAreaElement).value,
-                    error: null,
-                  })
-                }
+              <JsonParamEditor
+                param={p}
+                onUpdate={(patch) => updateParam(p.id, patch)}
               />
               <button
                 class="btn btn-ghost btn-xs text-error shrink-0 mt-1"
@@ -143,7 +155,6 @@ export function UrlBuilder() {
                 ✕
               </button>
             </div>
-            {/* Inline actions below the value, aligned to the value column */}
             <div class="flex justify-end gap-2 items-center mr-[2.5rem]">
               <label class="flex items-center gap-1 cursor-pointer text-xs text-base-content/50 select-none">
                 <input
@@ -173,7 +184,9 @@ export function UrlBuilder() {
                 Decode
               </button>
             </div>
-            {p.error && <p class="text-xs text-error ml-[9.5rem]">{p.error}</p>}
+            {p.error && (
+              <p class="text-xs text-error ml-[11.5rem]">{p.error}</p>
+            )}
           </div>
         ))}
         <button class="btn-tool mt-1" onClick={addParam}>
