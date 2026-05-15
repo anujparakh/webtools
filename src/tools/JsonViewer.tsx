@@ -8,6 +8,8 @@ import {
   type EditorView,
   type CursorInfo,
 } from "../components/JsonCodeEditor";
+import { JsonDiffView } from "../components/JsonDiffView";
+import { GitDiff } from "@phosphor-icons/react";
 
 type JsonValue =
   | string
@@ -17,12 +19,25 @@ type JsonValue =
   | JsonValue[]
   | { [key: string]: JsonValue };
 
-export function JsonViewer() {
+interface Props {
+  onWideModeChange?: (wide: boolean) => void;
+}
+
+export function JsonViewer({ onWideModeChange }: Props) {
   const [value, setValue] = useState("");
+  const [rightValue, setRightValue] = useState("");
+  const [compareMode, setCompareMode] = useState(false);
   const [parseError, setParseError] = useState<string | null>(null);
   const [cursorInfo, setCursorInfo] = useState<CursorInfo | null>(null);
   const editorRef = useRef<EditorView | null>(null);
   const { history, push, clear } = useToolHistory("webtools:json:history");
+
+  const toggleCompare = () => {
+    const next = !compareMode;
+    setCompareMode(next);
+    onWideModeChange?.(next);
+    if (!next) setParseError(null);
+  };
 
   const tryParse = (): JsonValue | null => {
     try {
@@ -95,34 +110,54 @@ export function JsonViewer() {
   return (
     <div>
       <div class="space-y-4">
-        <JsonCodeEditor
-          value={value}
-          onChange={(v) => {
-            setValue(v);
-            setParseError(null);
-          }}
-          onEditorCreated={(view) => {
-            editorRef.current = view;
-          }}
-          onCursorInfo={setCursorInfo}
-          minHeight="10rem"
-          maxHeight="40rem"
-        />
+        {compareMode ? (
+          <JsonDiffView
+            left={value}
+            right={rightValue}
+            onLeftChange={setValue}
+            onRightChange={setRightValue}
+          />
+        ) : (
+          <JsonCodeEditor
+            value={value}
+            onChange={(v) => {
+              setValue(v);
+              setParseError(null);
+            }}
+            onEditorCreated={(view) => {
+              editorRef.current = view;
+            }}
+            onCursorInfo={setCursorInfo}
+            minHeight="10rem"
+            maxHeight="40rem"
+          />
+        )}
 
         <div class="flex flex-wrap gap-2 items-center">
-          <button class="btn-tool" onClick={handleSort}>
-            Sort
+          {!compareMode && (
+            <>
+              <button class="btn-tool" onClick={handleSort}>
+                Sort
+              </button>
+              <button class="btn-tool" onClick={handleMinify}>
+                Minify
+              </button>
+              <button class="btn-tool" onClick={handleFold}>
+                Fold
+              </button>
+              <button class="btn-tool" onClick={handleUnfold}>
+                Unfold
+              </button>
+            </>
+          )}
+          <button
+            class={`btn-tool flex items-center gap-1.5 ${compareMode ? "bg-primary/20 text-primary border-primary/40" : ""}`}
+            onClick={toggleCompare}
+          >
+            <GitDiff size={14} />
+            {compareMode ? "Exit Compare" : "Compare"}
           </button>
-          <button class="btn-tool" onClick={handleMinify}>
-            Minify
-          </button>
-          <button class="btn-tool" onClick={handleFold}>
-            Fold
-          </button>
-          <button class="btn-tool" onClick={handleUnfold}>
-            Unfold
-          </button>
-          {cursorInfo && (
+          {!compareMode && cursorInfo && (
             <span class="ml-auto flex items-center gap-1.5 text-xs font-mono">
               <span class="text-base-content/70">{cursorInfo.path}</span>
               {cursorInfo.container && (
@@ -137,18 +172,20 @@ export function JsonViewer() {
           )}
         </div>
 
-        {parseError && (
+        {!compareMode && parseError && (
           <div role="alert" class="alert alert-error text-sm py-2">
             <span>{parseError}</span>
           </div>
         )}
       </div>
 
-      <HistoryPanel
-        history={history}
-        onSelect={loadFromHistory}
-        onClear={clear}
-      />
+      {!compareMode && (
+        <HistoryPanel
+          history={history}
+          onSelect={loadFromHistory}
+          onClear={clear}
+        />
+      )}
     </div>
   );
 }
