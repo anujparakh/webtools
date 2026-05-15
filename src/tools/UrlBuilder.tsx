@@ -108,7 +108,7 @@ export function UrlBuilder() {
 
   const { url: builtUrl, error } = buildUrl(baseUrl, params);
 
-  const loadFromHistory = (value: string) => {
+  const loadFromHistory = ({ value }: { value: string }) => {
     let urlToLoad = value;
     let paramsMeta: { isJson: boolean }[] = [];
     try {

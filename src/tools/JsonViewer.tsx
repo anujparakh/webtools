@@ -1,28 +1,31 @@
-import { useState, useRef } from "preact/hooks";
+import { useState, useRef, useEffect } from "preact/hooks";
 import { unfoldAll, foldEffect, foldInside, syntaxTree } from "@codemirror/language";
 import type { StateEffect } from "@codemirror/state";
 import { useToolHistory } from "../hooks/useToolHistory";
+import type { HistoryEntry } from "../hooks/useToolHistory";
 import { HistoryPanel } from "../components/HistoryPanel";
 import {
   JsonCodeEditor,
   type EditorView,
   type CursorInfo,
 } from "../components/JsonCodeEditor";
+import { resolveJsonPath } from "../json-utils";
+import type { JsonValue } from "../json-utils";
 
-type JsonValue =
-  | string
-  | number
-  | boolean
-  | null
-  | JsonValue[]
-  | { [key: string]: JsonValue };
+const BASE_TITLE = "JSON Viewer & Formatter | Web Tools";
 
 export function JsonViewer() {
   const [value, setValue] = useState("");
+  const [name, setName] = useState("");
   const [parseError, setParseError] = useState<string | null>(null);
   const [cursorInfo, setCursorInfo] = useState<CursorInfo | null>(null);
+  const [pathQuery, setPathQuery] = useState("");
   const editorRef = useRef<EditorView | null>(null);
   const { history, push, clear } = useToolHistory("webtools:json:history");
+
+  useEffect(() => {
+    document.title = name.trim() ? `${name.trim()} — ${BASE_TITLE}` : BASE_TITLE;
+  }, [name]);
 
   const tryParse = (): JsonValue | null => {
     try {
@@ -58,7 +61,7 @@ export function JsonViewer() {
       unfoldAll(view);
     }
     setValue(formatted);
-    push({ value: formatted, timestamp: Date.now() });
+    push({ value: formatted, label: name.trim() || undefined, timestamp: Date.now() });
   };
 
   const handleMinify = () => {
@@ -87,14 +90,42 @@ export function JsonViewer() {
     if (view) unfoldAll(view);
   };
 
-  const loadFromHistory = (val: string) => {
-    setValue(val);
+  const handleSave = () => {
+    if (!value.trim()) return;
+    push({ value, label: name.trim() || undefined, timestamp: Date.now() });
+  };
+
+  const loadFromHistory = (entry: HistoryEntry) => {
+    setValue(entry.value);
+    setName(entry.label ?? "");
     setParseError(null);
   };
+
+  const pathResult = (() => {
+    if (!pathQuery.trim() || !value.trim()) return null;
+    let parsed: JsonValue;
+    try {
+      parsed = JSON.parse(value) as JsonValue;
+    } catch {
+      return null;
+    }
+    return resolveJsonPath(parsed, pathQuery);
+  })();
 
   return (
     <div>
       <div class="space-y-4">
+        <div class="flex items-center gap-2">
+          <label class="text-sm text-base-content/50 shrink-0">Name</label>
+          <input
+            type="text"
+            placeholder="Optional label for this JSON"
+            value={name}
+            onInput={(e) => setName((e.target as HTMLInputElement).value)}
+            class="input input-sm input-bordered w-full text-sm"
+          />
+        </div>
+
         <JsonCodeEditor
           value={value}
           onChange={(v) => {
@@ -122,6 +153,9 @@ export function JsonViewer() {
           <button class="btn-tool" onClick={handleUnfold}>
             Unfold
           </button>
+          <button class="btn-tool" onClick={handleSave}>
+            Save
+          </button>
           {cursorInfo && (
             <span class="ml-auto flex items-center gap-1.5 text-xs font-mono">
               <span class="text-base-content/70">{cursorInfo.path}</span>
@@ -142,6 +176,35 @@ export function JsonViewer() {
             <span>{parseError}</span>
           </div>
         )}
+
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <label class="text-sm text-base-content/50 shrink-0">Path</label>
+            <input
+              type="text"
+              placeholder="e.g. items[0].name"
+              value={pathQuery}
+              onInput={(e) => setPathQuery((e.target as HTMLInputElement).value)}
+              class="input input-sm input-bordered w-full text-sm font-mono"
+            />
+          </div>
+          {pathQuery.trim() && pathResult && (
+            pathResult.found ? (
+              <pre class="bg-base-300 rounded px-3 py-2 text-sm font-mono text-base-content/90 whitespace-pre-wrap break-all">
+                {typeof pathResult.value === "object"
+                  ? JSON.stringify(pathResult.value, null, 2)
+                  : JSON.stringify(pathResult.value)}
+              </pre>
+            ) : (
+              <p class="text-sm text-error/80 px-1">{pathResult.error}</p>
+            )
+          )}
+          {pathQuery.trim() && !pathResult && (
+            <p class="text-sm text-base-content/40 px-1 italic">
+              Enter valid JSON above to resolve the path
+            </p>
+          )}
+        </div>
       </div>
 
       <HistoryPanel
