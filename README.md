@@ -2,7 +2,7 @@
 
 A collection of browser-based developer utilities. No installs, no sign-ups — everything runs in your browser.
 
-**Live site: https://webtools.anujparakh.dev/**
+**Try it here: https://webtools.anujparakh.dev/**
 
 ## Tools
 
