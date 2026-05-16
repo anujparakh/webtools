@@ -6,6 +6,7 @@ import {
   Hammer,
   BracketsCurly,
   Key,
+  Palette,
   CaretLeft,
   CaretRight,
 } from "@phosphor-icons/react";
@@ -15,13 +16,15 @@ const TOOLS = [
   { path: "/url-builder", label: "URL Builder", Icon: Hammer },
   { path: "/json", label: "JSON Viewer", Icon: BracketsCurly },
   { path: "/jwt", label: "JWT Viewer", Icon: Key },
+  { path: "/color", label: "Colors", Icon: Palette },
 ];
 
 interface SidebarProps {
   currentPath: string;
+  accentColor?: string;
 }
 
-export function Sidebar({ currentPath }: SidebarProps) {
+export function Sidebar({ currentPath, accentColor }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(
     () => localStorage.getItem("webtools:sidebar:collapsed") === "true",
   );
@@ -50,21 +53,24 @@ export function Sidebar({ currentPath }: SidebarProps) {
         </button>
 
         <nav class="flex flex-col gap-1 flex-1">
-          {TOOLS.map((t) => (
-            <button
-              key={t.path}
-              class={`flex items-center gap-2.5 w-full py-2 rounded-lg text-sm transition-colors ${collapsed ? "justify-center px-2" : "px-3"} ${
-                currentPath === t.path
-                  ? "bg-primary text-primary-content font-medium"
-                  : "text-base-content/60 hover:text-base-content hover:bg-base-300"
-              }`}
-              onClick={() => navigate(t.path)}
-              title={collapsed ? t.label : undefined}
-            >
-              <t.Icon size={18} />
-              {!collapsed && t.label}
-            </button>
-          ))}
+          {TOOLS.map((t) => {
+            const isActive = currentPath === t.path;
+            const color = isActive ? (accentColor ?? "#6366f1") : undefined;
+            return (
+              <button
+                key={t.path}
+                class={`flex items-center gap-2.5 w-full py-2 rounded-lg text-sm transition-colors ${collapsed ? "justify-center px-2" : "px-3"} ${
+                  isActive ? "font-medium" : "text-base-content/60 hover:text-base-content hover:bg-base-300"
+                }`}
+                style={color ? { backgroundColor: color + "2a", color } : undefined}
+                onClick={() => navigate(t.path)}
+                title={collapsed ? t.label : undefined}
+              >
+                <t.Icon size={18} />
+                {!collapsed && t.label}
+              </button>
+            );
+          })}
         </nav>
 
         <button
@@ -100,23 +106,23 @@ export function Sidebar({ currentPath }: SidebarProps) {
             <GlobeSimple size={16} weight="duotone" />
             Web Tools
           </button>
-          {TOOLS.map((t) => (
-            <button
-              key={t.path}
-              class={`flex items-center gap-1.5 shrink-0 px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                currentPath === t.path
-                  ? "bg-primary text-primary-content font-medium"
-                  : "text-base-content/60 hover:text-base-content hover:bg-base-300"
-              }`}
-              onClick={() => navigate(t.path)}
-            >
-              <t.Icon
-                size={14}
-                weight={currentPath === t.path ? "fill" : "regular"}
-              />
-              {t.label}
-            </button>
-          ))}
+          {TOOLS.map((t) => {
+            const isActive = currentPath === t.path;
+            const color = isActive ? (accentColor ?? "#6366f1") : undefined;
+            return (
+              <button
+                key={t.path}
+                class={`flex items-center gap-1.5 shrink-0 px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  isActive ? "font-medium" : "text-base-content/60 hover:text-base-content hover:bg-base-300"
+                }`}
+                style={color ? { backgroundColor: color + "2a", color } : undefined}
+                onClick={() => navigate(t.path)}
+              >
+                <t.Icon size={14} weight={isActive ? "fill" : "regular"} />
+                {t.label}
+              </button>
+            );
+          })}
         </div>
       </div>
     </>

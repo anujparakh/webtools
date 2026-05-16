@@ -1,29 +1,36 @@
 import { navigate } from "../router";
 
-const TOOLS = [
+const TOOLS: { path: string; label: string; subtitle: string; color: string; topGradient?: string }[] = [
   {
     path: "/url-encoder",
     label: "URL Encoder",
     subtitle: "Encode, decode, and inspect URLs",
-    color: "#06b6d4", // primary
+    color: "#06b6d4",
   },
   {
     path: "/url-builder",
     label: "URL Builder",
     subtitle: "Compose URLs with query parameters",
-    color: "#8b5cf6", // secondary
+    color: "#8b5cf6",
   },
   {
     path: "/json",
     label: "JSON Viewer",
     subtitle: "Parse, format, and explore JSON",
-    color: "#6366f1", // accent
+    color: "#6366f1",
   },
   {
     path: "/jwt",
     label: "JWT Viewer",
     subtitle: "Decode and inspect JWT tokens",
-    color: "#3fb950", // success
+    color: "#3fb950",
+  },
+  {
+    path: "/color",
+    label: "Colors",
+    subtitle: "Convert between hex, RGB, HSL, HSV, and OKLCH",
+    color: "#e879f9",
+    topGradient: "linear-gradient(to right, #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #8b5cf6, #ec4899)",
   },
 ];
 
@@ -59,14 +66,16 @@ export function Landing() {
         {TOOLS.map((tool, i) => (
           <button
             key={tool.path}
-            class="animate-breathe bg-base-200 border border-base-300 hover:bg-base-300 hover:border-base-content/20 transition-all p-6 text-left rounded-xl group"
+            class="animate-breathe bg-base-200 border border-base-300 hover:bg-base-300 hover:border-base-content/20 transition-all p-6 text-left rounded-xl group relative overflow-hidden"
             style={{
-              borderTopColor: tool.color,
-              borderTopWidth: "2px",
+              ...(tool.topGradient ? {} : { borderTopColor: tool.color, borderTopWidth: "2px" }),
               animationDelay: `${i * 0.4}s`,
             }}
             onClick={() => navigate(tool.path)}
           >
+            {tool.topGradient && (
+              <div class="absolute top-0 inset-x-0 h-0.5" style={{ background: tool.topGradient }} />
+            )}
             <div
               class="font-semibold mb-1 transition-colors"
               style={{ color: tool.color }}
