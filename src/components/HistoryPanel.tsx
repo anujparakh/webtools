@@ -3,7 +3,7 @@ import type { HistoryEntry } from "../hooks/useToolHistory";
 
 interface HistoryPanelProps {
   history: HistoryEntry[];
-  onSelect: (value: string) => void;
+  onSelect: (entry: HistoryEntry) => void;
   onClear: () => void;
 }
 
@@ -54,7 +54,7 @@ export function HistoryPanel({
                   <button
                     key={i}
                     class="w-full text-left px-4 py-2 text-sm hover:bg-base-300 transition-colors flex items-center justify-between gap-4 group"
-                    onClick={() => onSelect(entry.value)}
+                    onClick={() => onSelect(entry)}
                   >
                     <span class="font-mono text-base-content/80 truncate flex-1">
                       {truncate(entry.label ?? entry.value)}
