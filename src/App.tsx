@@ -1,5 +1,5 @@
 import { useRoute } from "./router";
-import { useEffect } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { Sidebar } from "./components/Sidebar";
 import { Landing } from "./tools/Landing";
 import { UrlEncoder } from "./tools/UrlEncoder";
@@ -51,6 +51,7 @@ export function App() {
   const path = useRoute();
   const isLanding = path === "/";
   const meta = TOOL_META[path];
+  const [jsonWideMode, setJsonWideMode] = useState(false);
 
   useEffect(() => {
     const pageMeta = meta ?? LANDING_META;
@@ -73,7 +74,7 @@ export function App() {
         ) : (
           <div class="px-4 py-6">
             <div
-              class="max-w-5xl mx-auto rounded-xl border border-base-300 bg-base-200 p-6"
+              class={`${jsonWideMode ? "max-w-full" : "max-w-5xl"} mx-auto rounded-xl border border-base-300 bg-base-200 p-6 transition-all duration-200`}
               style={
                 meta
                   ? ({
@@ -94,7 +95,7 @@ export function App() {
               )}
               {path === "/url-encoder" && <UrlEncoder />}
               {path === "/url-builder" && <UrlBuilder />}
-              {path === "/json" && <JsonViewer />}
+              {path === "/json" && <JsonViewer onWideModeChange={setJsonWideMode} />}
               {path === "/jwt" && <JwtViewer />}
             </div>
           </div>
