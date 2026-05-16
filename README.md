@@ -20,4 +20,16 @@ npm install
 npm run dev      # dev server at http://localhost:5173
 npm run build    # type-check + production build
 npm test         # run unit tests
+npm run test:e2e # Playwright integration tests — builds first (~1 min)
 ```
+
+Useful Playwright CLI flags (append after `npm run test:e2e --`):
+
+| Flag | Effect |
+|---|---|
+| `--headed` | Show the browser window |
+| `--ui` | Open interactive UI mode — pick and watch tests run |
+| `--debug` | Open Playwright Inspector to step through tests |
+| `--grep "pattern"` | Run only tests whose name matches the pattern |
+| `e2e/foo.spec.ts` | Run a single test file |
+| `--workers 1` | Run tests serially (useful when debugging flaky tests) |
