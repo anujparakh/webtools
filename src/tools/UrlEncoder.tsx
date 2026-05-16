@@ -104,7 +104,7 @@ export function UrlEncoder() {
       />
       <HistoryPanel
         history={history}
-        onSelect={(value) => setInput(value)}
+        onSelect={(entry) => setInput(entry.value)}
         onClear={clear}
       />
     </div>

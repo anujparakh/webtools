@@ -168,7 +168,7 @@ export function JwtViewer() {
         )}
       </div>
 
-      <HistoryPanel history={history} onSelect={setInput} onClear={clear} />
+      <HistoryPanel history={history} onSelect={(entry) => setInput(entry.value)} onClear={clear} />
     </div>
   );
 }

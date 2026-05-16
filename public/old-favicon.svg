@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <clipPath id="gc">
+      <circle cx="12" cy="12" r="10"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="32" height="32" rx="7" fill="#0d0b17"/>
+
+  <!-- Globe body -->
+  <circle cx="12" cy="12" r="10" fill="#181528"/>
+
+  <!-- Globe grid lines clipped to circle -->
+  <g clip-path="url(#gc)" fill="none" stroke="#6366f1" stroke-linecap="round">
+    <circle cx="12" cy="12" r="10" stroke-width="1.5"/>
+    <ellipse cx="12" cy="12" rx="10" ry="3.8" stroke-width="1"/>
+    <ellipse cx="12" cy="12" rx="4.5" ry="10" stroke-width="1"/>
+    <line x1="2" y1="7.5"  x2="22" y2="7.5"  stroke-width="0.6" stroke-opacity="0.5"/>
+    <line x1="2" y1="16.5" x2="22" y2="16.5" stroke-width="0.6" stroke-opacity="0.5"/>
+  </g>
+
+  <!-- Wrench (rotated 45°, placed bottom-right — ring head clears globe edge) -->
+  <g transform="translate(24,24) rotate(45)">
+    <!-- Handle -->
+    <rect x="-1.5" y="-0.5" width="3" height="8" rx="1"
+          fill="#8b5cf6" stroke="#0d0b17" stroke-width="0.75" stroke-linejoin="round"/>
+    <!-- Ring head outer -->
+    <circle cx="0" cy="-3.5" r="3.3" fill="#8b5cf6" stroke="#0d0b17" stroke-width="0.75"/>
+    <!-- Ring head hole -->
+    <circle cx="0" cy="-3.5" r="1.65" fill="#0d0b17"/>
+  </g>
+</svg>
