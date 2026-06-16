@@ -3,6 +3,7 @@ export interface Param {
   key: string
   value: string
   isJson: boolean
+  enabled: boolean
   error: string | null
 }
 
@@ -31,7 +32,7 @@ export function buildUrl(
   baseUrl: string,
   params: Param[]
 ): { url: string | null; error: string | null } {
-  const active = params.filter(p => p.key.trim())
+  const active = params.filter(p => p.key.trim() && p.enabled !== false)
   if (!active.length) return { url: baseUrl || null, error: null }
   try {
     const parts = active.map(p => {

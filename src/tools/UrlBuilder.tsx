@@ -44,7 +44,7 @@ function JsonParamEditor({
 export function UrlBuilder() {
   const [baseUrl, setBaseUrl] = useState("");
   const [params, setParams] = useState<Param[]>([
-    { id: crypto.randomUUID(), key: "", value: "", isJson: false, error: null },
+    { id: crypto.randomUUID(), key: "", value: "", isJson: false, enabled: true, error: null },
   ]);
   const { history, push, clear } = useToolHistory(
     "webtools:url-builder:history",
@@ -63,6 +63,7 @@ export function UrlBuilder() {
         key: "",
         value: "",
         isJson: false,
+        enabled: true,
         error: null,
       },
     ]);
@@ -80,6 +81,7 @@ export function UrlBuilder() {
           key,
           value: v,
           isJson: false,
+          enabled: true,
           error: null,
         })),
       );
@@ -110,7 +112,7 @@ export function UrlBuilder() {
 
   const loadFromHistory = ({ value }: { value: string }) => {
     let urlToLoad = value;
-    let paramsMeta: { isJson: boolean }[] = [];
+    let paramsMeta: { isJson: boolean; enabled?: boolean }[] = [];
     try {
       const decoded = JSON.parse(value);
       if (decoded && typeof decoded.url === "string") {
@@ -128,6 +130,7 @@ export function UrlBuilder() {
           key,
           value: v,
           isJson: paramsMeta[i]?.isJson ?? false,
+          enabled: paramsMeta[i]?.enabled ?? true,
           error: null,
         })),
       );
@@ -139,6 +142,7 @@ export function UrlBuilder() {
           key: "",
           value: "",
           isJson: false,
+          enabled: true,
           error: null,
         },
       ]);
@@ -166,8 +170,19 @@ export function UrlBuilder() {
           <div key={p.id} class="space-y-3">
             <div class="flex gap-2 items-start">
               <input
+                type="checkbox"
+                class="checkbox checkbox-sm shrink-0 mt-2"
+                checked={p.enabled !== false}
+                title={p.enabled !== false ? "Disable param" : "Enable param"}
+                onChange={(e) =>
+                  updateParam(p.id, {
+                    enabled: (e.target as HTMLInputElement).checked,
+                  })
+                }
+              />
+              <input
                 type="text"
-                class="input input-bordered input-sm font-mono w-44 shrink-0"
+                class={`input input-bordered input-sm font-mono w-44 shrink-0${p.enabled === false ? " opacity-40" : ""}`}
                 placeholder="key"
                 value={p.key}
                 onInput={(e) =>
@@ -176,10 +191,12 @@ export function UrlBuilder() {
                   })
                 }
               />
-              <JsonParamEditor
-                param={p}
-                onUpdate={(patch) => updateParam(p.id, patch)}
-              />
+              <div class={`flex flex-1 min-w-0${p.enabled === false ? " opacity-40" : ""}`}>
+                <JsonParamEditor
+                  param={p}
+                  onUpdate={(patch) => updateParam(p.id, patch)}
+                />
+              </div>
               <button
                 class="btn btn-ghost btn-xs text-error shrink-0 mt-1"
                 onClick={() => removeParam(p.id)}
@@ -250,7 +267,7 @@ export function UrlBuilder() {
             const activeParams = params.filter((p) => p.key.trim());
             const meta = {
               url: builtUrl,
-              paramsMeta: activeParams.map((p) => ({ isJson: p.isJson })),
+              paramsMeta: activeParams.map((p) => ({ isJson: p.isJson, enabled: p.enabled })),
             };
             push({ value: JSON.stringify(meta), label: builtUrl, timestamp: Date.now() });
           }}

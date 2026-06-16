@@ -31,21 +31,29 @@ describe('decodeUrlParams', () => {
 describe('buildUrl', () => {
   it('appends encoded params to a base URL', () => {
     const result = buildUrl('https://example.com', [
-      { id: '1', key: 'foo', value: 'bar', isJson: false, error: null },
+      { id: '1', key: 'foo', value: 'bar', isJson: false, enabled: true, error: null },
     ])
     expect(result).toEqual({ url: 'https://example.com?foo=bar', error: null })
   })
 
   it('returns base URL when no params have keys', () => {
     const result = buildUrl('https://example.com', [
-      { id: '1', key: '', value: '', isJson: false, error: null },
+      { id: '1', key: '', value: '', isJson: false, enabled: true, error: null },
     ])
     expect(result).toEqual({ url: 'https://example.com', error: null })
   })
 
+  it('omits disabled params from the URL', () => {
+    const result = buildUrl('https://example.com', [
+      { id: '1', key: 'foo', value: 'bar', isJson: false, enabled: true, error: null },
+      { id: '2', key: 'baz', value: 'qux', isJson: false, enabled: false, error: null },
+    ])
+    expect(result).toEqual({ url: 'https://example.com?foo=bar', error: null })
+  })
+
   it('returns error for invalid JSON param value', () => {
     const result = buildUrl('https://example.com', [
-      { id: '1', key: 'data', value: '{bad json', isJson: true, error: null },
+      { id: '1', key: 'data', value: '{bad json', isJson: true, enabled: true, error: null },
     ])
     expect(result.error).not.toBeNull()
     expect(result.url).toBeNull()
