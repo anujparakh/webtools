@@ -14,17 +14,20 @@ function JsonParamEditor({
 }) {
   if (!param.isJson) {
     return (
-      <textarea
-        class="textarea textarea-bordered textarea-sm font-mono flex-1 min-w-0 min-h-[2.5rem] resize-y"
-        placeholder="value"
-        value={param.value}
-        onInput={(e) =>
-          onUpdate({
-            value: (e.target as HTMLTextAreaElement).value,
-            error: null,
-          })
-        }
-      />
+      <div class="flex-1 min-w-0">
+        <textarea
+          class="textarea textarea-bordered textarea-sm font-mono w-full min-h-[2.5rem] resize-y"
+          placeholder="value"
+          value={param.value}
+          onInput={(e) =>
+            onUpdate({
+              value: (e.target as HTMLTextAreaElement).value,
+              error: null,
+            })
+          }
+        />
+        <p class="text-xs text-base-content/30 text-right mt-0.5">{param.value.length} chars</p>
+      </div>
     );
   }
 
@@ -158,6 +161,7 @@ export function UrlBuilder() {
             handleBaseUrlInput((e.target as HTMLInputElement).value)
           }
         />
+        <p class="text-xs text-base-content/30 text-right mt-0.5">{baseUrl.length} chars</p>
       </div>
 
       <div class="space-y-4">
@@ -165,17 +169,20 @@ export function UrlBuilder() {
         {params.map((p) => (
           <div key={p.id} class="space-y-3">
             <div class="flex gap-2 items-start">
-              <input
-                type="text"
-                class="input input-bordered input-sm font-mono w-44 shrink-0"
-                placeholder="key"
-                value={p.key}
-                onInput={(e) =>
-                  updateParam(p.id, {
-                    key: (e.target as HTMLInputElement).value,
-                  })
-                }
-              />
+              <div class="w-44 shrink-0">
+                <input
+                  type="text"
+                  class="input input-bordered input-sm font-mono w-full"
+                  placeholder="key"
+                  value={p.key}
+                  onInput={(e) =>
+                    updateParam(p.id, {
+                      key: (e.target as HTMLInputElement).value,
+                    })
+                  }
+                />
+                <p class="text-xs text-base-content/30 text-right mt-0.5">{p.key.length} chars</p>
+              </div>
               <JsonParamEditor
                 param={p}
                 onUpdate={(patch) => updateParam(p.id, patch)}
