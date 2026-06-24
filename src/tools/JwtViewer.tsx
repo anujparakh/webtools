@@ -124,12 +124,15 @@ export function JwtViewer() {
   return (
     <div>
       <div class="space-y-4">
-        <textarea
-          class="textarea textarea-bordered w-full font-mono min-h-[7rem] resize-y break-all"
-          placeholder="Paste a JWT token here… e.g. eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0In0.sig"
-          value={input}
-          onInput={(e) => handleInput((e.target as HTMLTextAreaElement).value)}
-        />
+        <div>
+          <textarea
+            class="textarea textarea-bordered w-full font-mono min-h-[7rem] resize-y break-all"
+            placeholder="Paste a JWT token here… e.g. eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0In0.sig"
+            value={input}
+            onInput={(e) => handleInput((e.target as HTMLTextAreaElement).value)}
+          />
+          <p class="text-xs text-base-content/30 text-right mt-0.5">{input.length} chars</p>
+        </div>
 
         {error && (
           <div role="alert" class="alert alert-error text-sm py-2">

@@ -139,13 +139,18 @@ export function JsonViewer({ onWideModeChange }: Props) {
     <div>
       <div class="space-y-4">
         <div class="flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Name this JSON"
-            value={name}
-            onInput={(e) => setName((e.target as HTMLInputElement).value)}
-            class="input input-sm input-bordered px-4 text-sm"
-          />
+          <div>
+            <input
+              type="text"
+              placeholder="Name this JSON"
+              value={name}
+              onInput={(e) => setName((e.target as HTMLInputElement).value)}
+              class="input input-sm input-bordered px-4 text-sm"
+            />
+            {name.length > 0 && (
+              <p class="text-xs text-base-content/30 text-right mt-0.5">{name.length} chars</p>
+            )}
+          </div>
         </div>
 
         {compareMode ? (
@@ -224,15 +229,20 @@ export function JsonViewer({ onWideModeChange }: Props) {
             <label class="text-sm text-base-content/50 shrink-0">
               Find Path
             </label>
-            <input
-              type="text"
-              placeholder="e.g. items[0].name"
-              value={pathQuery}
-              onInput={(e) =>
-                setPathQuery((e.target as HTMLInputElement).value)
-              }
-              class="input input-sm input-bordered w-full text-sm font-mono"
-            />
+            <div class="w-full">
+              <input
+                type="text"
+                placeholder="e.g. items[0].name"
+                value={pathQuery}
+                onInput={(e) =>
+                  setPathQuery((e.target as HTMLInputElement).value)
+                }
+                class="input input-sm input-bordered w-full text-sm font-mono"
+              />
+              {pathQuery.length > 0 && (
+                <p class="text-xs text-base-content/30 text-right mt-0.5">{pathQuery.length} chars</p>
+              )}
+            </div>
           </div>
           {pathQuery.trim() &&
             pathResult &&

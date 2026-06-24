@@ -30,12 +30,15 @@ function EncoderDecoder({
 
   return (
     <div class="space-y-4">
-      <textarea
-        class="textarea textarea-bordered w-full font-mono min-h-[8rem] resize-y"
-        placeholder="Paste text or URL here…"
-        value={input}
-        onInput={(e) => onInputChange((e.target as HTMLTextAreaElement).value)}
-      />
+      <div>
+        <textarea
+          class="textarea textarea-bordered w-full font-mono min-h-[8rem] resize-y"
+          placeholder="Paste text or URL here…"
+          value={input}
+          onInput={(e) => onInputChange((e.target as HTMLTextAreaElement).value)}
+        />
+        <p class="text-xs text-base-content/30 text-right mt-0.5">{input.length} chars</p>
+      </div>
       <div class="flex flex-wrap gap-2">
         <button
           class="btn-tool"
